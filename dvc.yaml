@@ -1,0 +1,34 @@
+stages:
+  pull_data:
+    cmd: python scripts/pull_data.py
+    deps:
+      - params.yaml
+    outs:
+      - data/20k_partition
+
+  data_prep:
+    cmd: python scripts/data_prep.py
+    deps:
+      - data/20k_partition
+      - params.yaml
+    outs:
+      - data/train
+      - data/val
+      - data/test
+
+  model_training:
+    cmd: python scripts/model_training.py
+    deps:
+      - data/train
+      - data/val
+      - params.yaml
+    outs:
+      - models/tuned_model
+
+  eval_perf:
+    cmd: python scripts/eval_perf.py
+    deps:
+      - models/tuned_model
+      - data/test
+    outs:
+      - reports/evaluation_report
