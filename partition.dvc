@@ -1,6 +1,6 @@
 outs:
-- md5: b04ec8a6b6465d2aaa733e3ac4ef520c.dir
-  size: 299594982
-  nfiles: 50008
+- md5: ec2d5055840344d6192c0afd51604e41.dir
+  size: 113380868
+  nfiles: 50000
   hash: md5
   path: partition
