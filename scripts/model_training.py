@@ -108,7 +108,7 @@ def build_model(hp):
 tuner = kt.RandomSearch(
     build_model,
     objective='val_accuracy',
-    max_trials=10,                       # Number of hyperparameter combinations to try
+    max_trials=3,                       # Number of hyperparameter combinations to try
     executions_per_trial=1,              # Number of models to train per trial
     directory='hyperparameter_tuning'
 )
