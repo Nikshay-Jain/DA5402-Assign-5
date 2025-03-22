@@ -21,14 +21,16 @@ stages:
     deps:
       - data/train
       - data/val
+      - data/test
       - params.yaml
     outs:
-      - models/tuned_model
+      - models/tuned_model.keras
 
   eval_perf:
     cmd: python scripts/eval_perf.py
     deps:
       - models/tuned_model
       - data/test
+      - params.yaml
     outs:
-      - reports/evaluation_report
+      - reports/evaluation_report.json

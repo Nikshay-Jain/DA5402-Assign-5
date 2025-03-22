@@ -1,0 +1,7 @@
+tensorflow
+keras-tuner
+scikit-learn
+matplotlib
+seaborn
+PyYAML
+dvc

@@ -1,8 +1,5 @@
-# scripts/data_preparation.py
-import yaml
-import os
-import random
-import shutil
+# scripts/data_prep.py
+import os, yaml, random, shutil
 
 # Load parameters from params.yaml
 with open("params.yaml", "r") as f:
@@ -12,8 +9,8 @@ random_seed = params["random_seed"]
 random.seed(random_seed)
 
 # Define paths
-raw_data_dir = "data"  # Folder containing class-wise raw images
-input_dir = "data/20k_partition"  # Folder to store renamed images
+raw_data_dir = "data"              # Folder containing class-wise raw images
+input_dir = "data/20k_partition"   # Folder to store renamed images
 train_dir = "data/train"
 val_dir = "data/val"
 test_dir = "data/test"

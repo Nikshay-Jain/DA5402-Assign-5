@@ -1,12 +1,16 @@
 # scripts/model_training.py
-import os, yaml
-import keras_tuner as kt
-import matplotlib.pyplot as plt
+import numpy as np
+import os, yaml, logging, subprocess
+
 import tensorflow as tf
 from tensorflow.keras import layers, models, Input
 from tensorflow.keras.callbacks import EarlyStopping
+import keras_tuner as kt
+from sklearn.metrics import confusion_matrix, classification_report
 
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 # Load parameters from params.yaml
 with open("params.yaml", "r") as f:
@@ -19,9 +23,15 @@ tf.random.set_seed(random_seed)
 # Define paths
 train_dir = "data/train"
 val_dir = "data/val"
+test_dir = "data/test"
 model_path = "models/tuned_model.keras"
 
-# Load training and validation datasets using TensorFlow's image_dataset_from_directory
+# Pull dataset from DVC
+logger.info("Pulling dataset from DVC...")
+subprocess.run(["dvc", "pull", f"data/{params['data']['version']}"], check=True)
+
+# Load training, validation, and test datasets using TensorFlow's image_dataset_from_directory
+logger.info("Loading datasets...")
 train_data = tf.keras.utils.image_dataset_from_directory(
     train_dir,
     image_size=(32, 32),  # Resize images to 32x32 (CIFAR-10 size)
@@ -38,6 +48,15 @@ val_data = tf.keras.utils.image_dataset_from_directory(
     seed=random_seed,
 )
 
+test_data = tf.keras.utils.image_dataset_from_directory(
+    test_dir,
+    image_size=(32, 32),
+    batch_size=params["model"]["batch_size"],
+    label_mode="int",
+    seed=random_seed,
+    shuffle=False,  # Do not shuffle for evaluation
+)
+
 # Capture class names from the training dataset
 class_names = train_data.class_names
 num_classes = 10
@@ -46,19 +65,12 @@ num_classes = 10
 normalization_layer = tf.keras.layers.Rescaling(1.0 / 255)
 train_dataset = train_data.map(lambda x, y: (normalization_layer(x), tf.one_hot(y, depth=10)))
 val_dataset = val_data.map(lambda x, y: (normalization_layer(x), tf.one_hot(y, depth=10)))
+test_dataset = test_data.map(lambda x, y: (normalization_layer(x), tf.one_hot(y, depth=10)))
 
 # Cache and prefetch datasets for efficient loading
 train_dataset = train_dataset.cache().prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 val_dataset = val_dataset.cache().prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
-
-# Load the baseline model (if it exists)
-baseline_model = None
-baseline_accuracy = 0.0
-if os.path.exists(model_path):
-    baseline_model = tf.keras.models.load_model(model_path)
-    # Evaluate baseline model on the validation set
-    baseline_accuracy = baseline_model.evaluate(val_dataset, verbose=0)[1]
-    print(f"Baseline model loaded with validation accuracy: {baseline_accuracy:.4f}")
+test_dataset = test_dataset.cache().prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 
 # Define a function to build the model for hyperparameter tuning
 def build_model(hp):
@@ -128,6 +140,7 @@ early_stopping = EarlyStopping(
 )
 
 # Perform hyperparameter tuning
+logger.info("Starting hyperparameter tuning...")
 tuner.search(
     train_dataset,
     validation_data=val_dataset,
@@ -136,51 +149,34 @@ tuner.search(
 )
 
 # Get the best model from tuning
-best_trial_model = tuner.get_best_models(num_models=1)[0]
-
-# Evaluate the best trial model on the validation set
-best_trial_accuracy = best_trial_model.evaluate(val_dataset, verbose=0)[1]
-print(f"Best trial model validation accuracy: {best_trial_accuracy:.4f}")
-
-# Compare with the baseline model
-if baseline_model is not None and best_trial_accuracy > baseline_accuracy:
-    print("Best trial model outperforms the baseline model. Saving the new model.")
-    best_trial_model.save(model_path)
-else:
-    print("Baseline model is better or equal. No changes made.")
+best_model = tuner.get_best_models(num_models=1)[0]
 
 # Train the best model with the full training dataset
-history = best_trial_model.fit(
+logger.info("Training the best model...")
+history = best_model.fit(
     train_dataset,
     validation_data=val_dataset,
     epochs=params["model"]["epochs"],
     callbacks=[early_stopping]
 )
 
-# Plot training and validation loss and accuracy
-plt.figure(figsize=(12, 5))
+# Evaluate the best model on the test dataset
+logger.info("Evaluating the best model on the test dataset...")
+y_true = np.concatenate([y for x, y in test_dataset], axis=0)
+y_pred = best_model.predict(test_dataset)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true_classes = np.argmax(y_true, axis=1)
 
-# Loss plot
-plt.subplot(1, 2, 1)
-plt.plot(history.history['loss'], label='Training Loss', color='blue')
-plt.plot(history.history['val_loss'], label='Validation Loss', color='orange')
-plt.title('Loss Curve')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend()
+# Generate confusion matrix
+confusion_mtx = confusion_matrix(y_true_classes, y_pred_classes)
+logger.info("Confusion Matrix:")
+logger.info(confusion_mtx)
 
-# Accuracy plot
-plt.subplot(1, 2, 2)
-plt.plot(history.history['accuracy'], label='Training Accuracy', color='blue')
-plt.plot(history.history['val_accuracy'], label='Validation Accuracy', color='orange')
-plt.title('Accuracy Curve')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
-plt.legend()
-
-plt.tight_layout()
-plt.show()
+# Generate classification report
+class_report = classification_report(y_true_classes, y_pred_classes, target_names=class_names)
+logger.info("Classification Report:")
+logger.info(class_report)
 
 # Save the best model
-best_trial_model.save(model_path)
-print("Model training complete. Best model saved to 'models/tuned_model.keras'.")
+best_model.save(model_path)
+logger.info(f"Model training complete. Best model saved to '{model_path}'.")
