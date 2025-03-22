@@ -1,4 +1,5 @@
 [core]
     remote = origin
+    autostage = true
 ['remote "origin"']
     url = C:\Users\niksh\Desktop\dvc-storage
