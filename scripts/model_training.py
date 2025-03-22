@@ -2,12 +2,9 @@
 import os, yaml
 import keras_tuner as kt
 import matplotlib.pyplot as plt
-
 import tensorflow as tf
-from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import layers, models, Input
 from tensorflow.keras.callbacks import EarlyStopping
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
@@ -22,7 +19,7 @@ tf.random.set_seed(random_seed)
 # Define paths
 train_dir = "data/train"
 val_dir = "data/val"
-test_dir = "data/test"
+model_path = "models/tuned_model.keras"
 
 # Load training and validation datasets using TensorFlow's image_dataset_from_directory
 train_data = tf.keras.utils.image_dataset_from_directory(
@@ -47,12 +44,21 @@ num_classes = 10
 
 # Normalize pixel values to [0, 1] and convert labels to one-hot encoding
 normalization_layer = tf.keras.layers.Rescaling(1.0 / 255)
-train_dataset = train_data.map(lambda x, y: (normalization_layer(x), to_categorical(y, num_classes=10)))
-val_dataset = val_data.map(lambda x, y: (normalization_layer(x), to_categorical(y, num_classes=10)))
+train_dataset = train_data.map(lambda x, y: (normalization_layer(x), tf.one_hot(y, depth=10)))
+val_dataset = val_data.map(lambda x, y: (normalization_layer(x), tf.one_hot(y, depth=10)))
 
 # Cache and prefetch datasets for efficient loading
 train_dataset = train_dataset.cache().prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
 val_dataset = val_dataset.cache().prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+
+# Load the baseline model (if it exists)
+baseline_model = None
+baseline_accuracy = 0.0
+if os.path.exists(model_path):
+    baseline_model = tf.keras.models.load_model(model_path)
+    # Evaluate baseline model on the validation set
+    baseline_accuracy = baseline_model.evaluate(val_dataset, verbose=0)[1]
+    print(f"Baseline model loaded with validation accuracy: {baseline_accuracy:.4f}")
 
 # Define a function to build the model for hyperparameter tuning
 def build_model(hp):
@@ -108,15 +114,16 @@ def build_model(hp):
 tuner = kt.RandomSearch(
     build_model,
     objective='val_accuracy',
-    max_trials=3,                       # Number of hyperparameter combinations to try
-    executions_per_trial=1,              # Number of models to train per trial
-    directory='hyperparameter_tuning'
+    max_trials=3,  # Number of hyperparameter combinations to try
+    executions_per_trial=1,  # Number of models to train per trial
+    directory='hyperparameter_tuning',
+    project_name='cifar10_tuning'
 )
 
 # Early stopping callback
 early_stopping = EarlyStopping(
     monitor='val_loss',
-    patience=10,
+    patience=5,
     restore_best_weights=True
 )
 
@@ -128,11 +135,22 @@ tuner.search(
     callbacks=[early_stopping]
 )
 
-# Get the best model
-best_model = tuner.get_best_models(num_models=1)[0]
+# Get the best model from tuning
+best_trial_model = tuner.get_best_models(num_models=1)[0]
+
+# Evaluate the best trial model on the validation set
+best_trial_accuracy = best_trial_model.evaluate(val_dataset, verbose=0)[1]
+print(f"Best trial model validation accuracy: {best_trial_accuracy:.4f}")
+
+# Compare with the baseline model
+if baseline_model is not None and best_trial_accuracy > baseline_accuracy:
+    print("Best trial model outperforms the baseline model. Saving the new model.")
+    best_trial_model.save(model_path)
+else:
+    print("Baseline model is better or equal. No changes made.")
 
 # Train the best model with the full training dataset
-history = best_model.fit(
+history = best_trial_model.fit(
     train_dataset,
     validation_data=val_dataset,
     epochs=params["model"]["epochs"],
@@ -164,5 +182,5 @@ plt.tight_layout()
 plt.show()
 
 # Save the best model
-best_model.save("models/tuned_model.keras")
+best_trial_model.save(model_path)
 print("Model training complete. Best model saved to 'models/tuned_model.keras'.")

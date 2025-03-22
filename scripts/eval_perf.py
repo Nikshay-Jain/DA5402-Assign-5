@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
-import yaml
+import os, yaml, json
 
 # Load parameters from params.yaml
 with open("params.yaml", "r") as f:
@@ -69,7 +69,7 @@ for i, class_name in enumerate(class_names):
     class_indices = np.where(y_true_classes == i)[0]
     correct_predictions = np.sum(y_pred_classes[class_indices] == y_true_classes[class_indices])
     total_samples = len(class_indices)
-    class_accuracy[class_name] = correct_predictions / total_samples
+    class_accuracy[class_name] = float(correct_predictions / total_samples)  # Convert to float
     print(f"Accuracy for class {class_name}: {class_accuracy[class_name]:.4f}")
 
 # Misclassification table
@@ -78,7 +78,7 @@ for i, true_class in enumerate(class_names):
     misclassification_table[true_class] = {}
     for j, pred_class in enumerate(class_names):
         if i != j:
-            misclassification_table[true_class][pred_class] = np.sum((y_true_classes == i) & (y_pred_classes == j))
+            misclassification_table[true_class][pred_class] = int(np.sum((y_true_classes == i) & (y_pred_classes == j)))  # Convert to int
 
 # Print misclassification table
 print("\nMisclassification Table:")
@@ -90,13 +90,13 @@ for true_class in class_names:
 
 # Save evaluation report
 evaluation_report = {
-    "overall_accuracy": accuracy,
+    "overall_accuracy": float(accuracy),  # Convert to float
     "class_accuracy": class_accuracy,
     "misclassification_table": misclassification_table,
 }
 
 # Save the evaluation report to a file
-import json
+os.makedirs("reports", exist_ok=True)
 with open("reports/evaluation_report.json", "w") as f:
     json.dump(evaluation_report, f, indent=4)
 
