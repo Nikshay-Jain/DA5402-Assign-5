@@ -9,7 +9,18 @@ import keras_tuner as kt
 from sklearn.metrics import confusion_matrix, classification_report
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+log_dir = "logs"  # Directory to save log files
+os.makedirs(log_dir, exist_ok=True)  # Create logs directory if it doesn't exist
+
+# Set up logging to both console and file
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(os.path.join(log_dir, "model_training.log")),  # Save logs to a file
+        logging.StreamHandler()  # Print logs to the console
+    ]
+)
 logger = logging.getLogger(__name__)
 
 # Load parameters from params.yaml
@@ -24,11 +35,11 @@ tf.random.set_seed(random_seed)
 train_dir = "data/train"
 val_dir = "data/val"
 test_dir = "data/test"
-model_path = "models/tuned_model.keras"
+model_path = "models/tuned_model_{params['data']['version']}_seed{random_seed}.keras"
 
-# Pull dataset from DVC
-logger.info("Pulling dataset from DVC...")
-subprocess.run(["dvc", "pull", f"data/{params['data']['version']}"], check=True)
+# # Pull dataset from DVC
+# logger.info("Pulling dataset from DVC...")
+# subprocess.run(["dvc", "pull", f"partition/{params['partition']['version']}"], check=True)
 
 # Load training, validation, and test datasets using TensorFlow's image_dataset_from_directory
 logger.info("Loading datasets...")
@@ -38,6 +49,7 @@ train_data = tf.keras.utils.image_dataset_from_directory(
     batch_size=params["model"]["batch_size"],
     label_mode="int",  # Labels are integers
     seed=random_seed,
+    subset="training",
 )
 
 val_data = tf.keras.utils.image_dataset_from_directory(
@@ -46,6 +58,7 @@ val_data = tf.keras.utils.image_dataset_from_directory(
     batch_size=params["model"]["batch_size"],
     label_mode="int",
     seed=random_seed,
+    subset="validation",
 )
 
 test_data = tf.keras.utils.image_dataset_from_directory(
@@ -54,7 +67,8 @@ test_data = tf.keras.utils.image_dataset_from_directory(
     batch_size=params["model"]["batch_size"],
     label_mode="int",
     seed=random_seed,
-    shuffle=False,  # Do not shuffle for evaluation
+    shuffle=False,       # Do not shuffle for evaluation
+    subset="testing",
 )
 
 # Capture class names from the training dataset
@@ -116,7 +130,7 @@ def build_model(hp):
 
     # Compile the model
     model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=hp.Choice('learning_rate', values=[1e-3, 1e-4])),
         loss="categorical_crossentropy",
         metrics=["accuracy"],
     )
@@ -126,7 +140,7 @@ def build_model(hp):
 tuner = kt.RandomSearch(
     build_model,
     objective='val_accuracy',
-    max_trials=3,  # Number of hyperparameter combinations to try
+    max_trials=2,  # Number of hyperparameter combinations to try
     executions_per_trial=1,  # Number of models to train per trial
     directory='hyperparameter_tuning',
     project_name='cifar10_tuning'

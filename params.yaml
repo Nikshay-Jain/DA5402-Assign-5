@@ -1,5 +1,5 @@
-data:
-  version: v1
+partition:
+  version: task3_1.0
   train_ratio: 0.7
   val_ratio: 0.2
   test_ratio: 0.1
