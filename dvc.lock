@@ -1,0 +1,43 @@
+schema: '2.0'
+stages:
+  pull_data:
+    cmd: python scripts/pull_data.py
+    deps:
+    - path: params.yaml
+      hash: md5
+      md5: 010cbc6fc6a07cb65576cb6b3e5a76fb
+      size: 175
+    outs:
+    - path: data/20k_partition
+      hash: md5
+      md5: 860c35d537f50e062a787a9ee783a37f.dir
+      size: 113380868
+      nfiles: 50000
+  data_prep:
+    cmd: python scripts/data_prep.py
+    deps:
+    - path: data/20k_partition
+      hash: md5
+      md5: 860c35d537f50e062a787a9ee783a37f.dir
+      size: 113380868
+      nfiles: 50000
+    - path: params.yaml
+      hash: md5
+      md5: 010cbc6fc6a07cb65576cb6b3e5a76fb
+      size: 175
+    outs:
+    - path: data/test
+      hash: md5
+      md5: 86bfd5f6b972572511f3b0395fa81f1e.dir
+      size: 11326087
+      nfiles: 5000
+    - path: data/train
+      hash: md5
+      md5: 7ac7b70521f29953b2dc71a8d02c4ef6.dir
+      size: 79382771
+      nfiles: 35000
+    - path: data/val
+      hash: md5
+      md5: fd0cacbbfd011ba5dac12b72d5212af0.dir
+      size: 22672010
+      nfiles: 10000
