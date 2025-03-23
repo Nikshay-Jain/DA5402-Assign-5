@@ -51,13 +51,14 @@ def train_and_evaluate(partition, random_seed):
 
     if partition=="data":
         data_dir = "data"
-
-    # Pull dataset from DVC
-    logger.info(f"Pulling dataset {partition} from DVC...")
-    subprocess.run(["dvc", "pull", data_dir], check=True)
+    else:
+        # Pull dataset from DVC
+        logger.info(f"Pulling dataset {partition} from DVC...")
+        subprocess.run(["dvc", "pull", data_dir], check=True)
 
     # Load training, validation, and test datasets using TensorFlow's image_dataset_from_directory
     logger.info("Loading datasets...")
+    
     train_data = tf.keras.utils.image_dataset_from_directory(
         os.path.join(data_dir, "train"),
         image_size=(32, 32),  # Resize images to 32x32 (CIFAR-10 size)
