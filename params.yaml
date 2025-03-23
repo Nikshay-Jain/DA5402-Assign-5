@@ -1,5 +1,5 @@
 partition:
-  version: task3_1.0
+  version: v1.0
   train_ratio: 0.7
   val_ratio: 0.2
   test_ratio: 0.1
@@ -9,4 +9,4 @@ model:
   epochs: 10
   batch_size: 32
 
-random_seed: 42
+random_seed: 21
