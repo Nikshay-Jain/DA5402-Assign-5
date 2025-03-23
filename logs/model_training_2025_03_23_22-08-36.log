@@ -1,0 +1,67 @@
+2025-03-23 22:08:36,557 - INFO - Model training script started.
+2025-03-23 22:08:36,567 - INFO - Processing partition: v1
+2025-03-23 22:08:36,567 - INFO - Pulling dataset v1 from DVC...
+2025-03-23 22:09:08,231 - INFO - Loading datasets...
+2025-03-23 22:09:15,145 - INFO - Starting hyperparameter tuning...
+2025-03-23 22:09:20,853 - WARNING - From C:\Users\niksh\Desktop\DA5402-Assign-5\venv\Lib\site-packages\keras\src\backend\common\global_state.py:82: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+2025-03-23 22:27:09,745 - INFO - Training the best model...
+2025-03-23 22:36:28,969 - INFO - Model saved to 'models/tuned_model_v1_seed21.keras'.
+2025-03-23 22:36:28,972 - INFO - Evaluating the best model on the test dataset...
+2025-03-23 22:36:36,379 - INFO - Classification Report:
+2025-03-23 22:36:36,380 - INFO - {'airplane': {'precision': 0.6611570247933884, 'recall': 0.64, 'f1-score': 0.6504065040650406, 'support': 250.0}, 'automobile': {'precision': 0.8288770053475936, 'recall': 0.62, 'f1-score': 0.7093821510297483, 'support': 250.0}, 'bird': {'precision': 0.3755656108597285, 'recall': 0.664, 'f1-score': 0.4797687861271676, 'support': 250.0}, 'cat': {'precision': 0.48295454545454547, 'recall': 0.34, 'f1-score': 0.39906103286384975, 'support': 250.0}, 'deer': {'precision': 0.5410628019323671, 'recall': 0.448, 'f1-score': 0.49015317286652077, 'support': 250.0}, 'dog': {'precision': 0.5, 'recall': 0.632, 'f1-score': 0.558303886925795, 'support': 250.0}, 'frog': {'precision': 0.6382252559726962, 'recall': 0.748, 'f1-score': 0.6887661141804788, 'support': 250.0}, 'horse': {'precision': 0.6884615384615385, 'recall': 0.716, 'f1-score': 0.7019607843137254, 'support': 250.0}, 'ship': {'precision': 0.8622754491017964, 'recall': 0.576, 'f1-score': 0.6906474820143885, 'support': 250.0}, 'truck': {'precision': 0.7857142857142857, 'recall': 0.66, 'f1-score': 0.717391304347826, 'support': 250.0}, 'accuracy': 0.6044, 'macro avg': {'precision': 0.6364293517637939, 'recall': 0.6043999999999999, 'f1-score': 0.6085841218734541, 'support': 2500.0}, 'weighted avg': {'precision': 0.636429351763794, 'recall': 0.6044, 'f1-score': 0.608584121873454, 'support': 2500.0}}
+2025-03-23 22:36:36,415 - INFO - Confusion Matrix:
+2025-03-23 22:36:36,416 - INFO - [[160   3  45   2  13   3   2   2  10  10]
+ [  9 155   8   9   7   6  17   5   4  30]
+ [  3   1 166  17  17  21  16   6   0   3]
+ [  2   1  45  85  16  64  25  10   1   1]
+ [  9   0  59   7 112  15  19  28   1   0]
+ [  1   0  33  26   8 158  11  12   0   1]
+ [  0   1  30   9   8  12 187   3   0   0]
+ [  2   0  24   4  14  22   3 179   2   0]
+ [ 45   9  20   9   7   7   9   0 144   0]
+ [ 11  17  12   8   5   8   4  15   5 165]]
+2025-03-23 22:36:40,351 - INFO - Evaluation report saved to 'reports/evaluation_report_v1_seed21.json'.
+2025-03-23 22:36:40,459 - INFO - Processing partition: v2
+2025-03-23 22:36:40,459 - INFO - Pulling dataset v2 from DVC...
+2025-03-23 22:37:08,700 - INFO - Loading datasets...
+2025-03-23 22:37:14,566 - INFO - Starting hyperparameter tuning...
+2025-03-23 22:49:22,333 - INFO - Training the best model...
+2025-03-23 23:02:06,187 - INFO - Model saved to 'models/tuned_model_v2_seed21.keras'.
+2025-03-23 23:02:06,188 - INFO - Evaluating the best model on the test dataset...
+2025-03-23 23:02:14,412 - INFO - Classification Report:
+2025-03-23 23:02:14,431 - INFO - {'airplane': {'precision': 0.8385093167701864, 'recall': 0.54, 'f1-score': 0.656934306569343, 'support': 250.0}, 'automobile': {'precision': 0.8351063829787234, 'recall': 0.628, 'f1-score': 0.7168949771689498, 'support': 250.0}, 'bird': {'precision': 0.6, 'recall': 0.288, 'f1-score': 0.3891891891891892, 'support': 250.0}, 'cat': {'precision': 0.5102040816326531, 'recall': 0.2, 'f1-score': 0.28735632183908044, 'support': 250.0}, 'deer': {'precision': 0.34060402684563756, 'recall': 0.812, 'f1-score': 0.4799054373522459, 'support': 250.0}, 'dog': {'precision': 0.6351351351351351, 'recall': 0.376, 'f1-score': 0.4723618090452261, 'support': 250.0}, 'frog': {'precision': 0.5, 'recall': 0.868, 'f1-score': 0.6345029239766082, 'support': 250.0}, 'horse': {'precision': 0.7570093457943925, 'recall': 0.648, 'f1-score': 0.6982758620689655, 'support': 250.0}, 'ship': {'precision': 0.6265432098765432, 'recall': 0.812, 'f1-score': 0.7073170731707317, 'support': 250.0}, 'truck': {'precision': 0.7603686635944701, 'recall': 0.66, 'f1-score': 0.7066381156316917, 'support': 250.0}, 'accuracy': 0.5832, 'macro avg': {'precision': 0.6403480162627742, 'recall': 0.5832, 'f1-score': 0.5749376016012031, 'support': 2500.0}, 'weighted avg': {'precision': 0.6403480162627743, 'recall': 0.5832, 'f1-score': 0.5749376016012032, 'support': 2500.0}}
+2025-03-23 23:02:14,444 - INFO - Confusion Matrix:
+2025-03-23 23:02:14,447 - INFO - [[135   4  21   0  20   1   8   4  43  14]
+ [  5 157   0   1   8   0  22   3  25  29]
+ [  5   2  72   5 100   9  43   4   9   1]
+ [  1   1  11  50  78  34  53  14   5   3]
+ [  4   0   1   3 203   2  20  11   6   0]
+ [  1   1   6  33  61  94  38  11   5   0]
+ [  0   0   3   2  22   2 217   1   3   0]
+ [  0   0   0   3  70   4   6 162   4   1]
+ [  6   7   5   0  14   2   9   0 203   4]
+ [  4  16   1   1  20   0  18   4  21 165]]
+2025-03-23 23:02:18,130 - INFO - Evaluation report saved to 'reports/evaluation_report_v2_seed21.json'.
+2025-03-23 23:02:18,158 - INFO - Processing partition: v3
+2025-03-23 23:02:18,158 - INFO - Pulling dataset v3 from DVC...
+2025-03-23 23:02:53,257 - INFO - Loading datasets...
+2025-03-23 23:02:59,737 - INFO - Starting hyperparameter tuning...
+2025-03-23 23:33:22,203 - INFO - Training the best model...
+2025-03-23 23:51:15,563 - INFO - Model saved to 'models/tuned_model_v3_seed21.keras'.
+2025-03-23 23:51:15,564 - INFO - Evaluating the best model on the test dataset...
+2025-03-23 23:51:20,912 - INFO - Classification Report:
+2025-03-23 23:51:20,913 - INFO - {'airplane': {'precision': 0.7321428571428571, 'recall': 0.6533864541832669, 'f1-score': 0.6905263157894737, 'support': 251.0}, 'automobile': {'precision': 0.758364312267658, 'recall': 0.8127490039840638, 'f1-score': 0.7846153846153846, 'support': 251.0}, 'bird': {'precision': 0.574468085106383, 'recall': 0.5378486055776892, 'f1-score': 0.5555555555555556, 'support': 251.0}, 'cat': {'precision': 0.5865384615384616, 'recall': 0.24302788844621515, 'f1-score': 0.3436619718309859, 'support': 251.0}, 'deer': {'precision': 0.4669811320754717, 'recall': 0.7888446215139442, 'f1-score': 0.5866666666666667, 'support': 251.0}, 'dog': {'precision': 0.5202702702702703, 'recall': 0.6135458167330677, 'f1-score': 0.5630712979890311, 'support': 251.0}, 'frog': {'precision': 0.6655629139072847, 'recall': 0.8007968127490039, 'f1-score': 0.7269439421338155, 'support': 251.0}, 'horse': {'precision': 0.7757009345794392, 'recall': 0.6613545816733067, 'f1-score': 0.7139784946236559, 'support': 251.0}, 'ship': {'precision': 0.7364620938628159, 'recall': 0.8127490039840638, 'f1-score': 0.7727272727272727, 'support': 251.0}, 'truck': {'precision': 0.8727272727272727, 'recall': 0.5737051792828686, 'f1-score': 0.6923076923076923, 'support': 251.0}, 'accuracy': 0.649800796812749, 'macro avg': {'precision': 0.6689218333477914, 'recall': 0.649800796812749, 'f1-score': 0.6430054594239534, 'support': 2510.0}, 'weighted avg': {'precision': 0.6689218333477914, 'recall': 0.649800796812749, 'f1-score': 0.6430054594239535, 'support': 2510.0}}
+2025-03-23 23:51:20,927 - INFO - Confusion Matrix:
+2025-03-23 23:51:20,927 - INFO - [[164  11  15   2  20   4   3   6  22   4]
+ [  4 204   2   1   6   4   5   1  14  10]
+ [ 15   0 135   5  44  17  22   8   5   0]
+ [  3   1  26  61  43  71  31   8   5   2]
+ [  6   3  12   6 198   4   9  10   3   0]
+ [  2   2  12  17  31 154  13  11   7   2]
+ [  3   0   9   3  25   9 201   1   0   0]
+ [  1   4  10   4  41  22   3 166   0   0]
+ [ 14   6   9   3   3   6   3   0 204   3]
+ [ 12  38   5   2  13   5  12   3  17 144]]
+2025-03-23 23:51:21,701 - INFO - Evaluation report saved to 'reports/evaluation_report_v3_seed21.json'.
+2025-03-23 23:51:21,741 - INFO - All partitions processed. Model training complete.
