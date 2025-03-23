@@ -89,3 +89,21 @@
 2025-03-23 19:06:17,212 - INFO - Pulling dataset v1+v2+v3 from DVC...
 2025-03-23 19:06:28,141 - INFO - Loading datasets...
 2025-03-23 19:06:33,956 - INFO - Starting hyperparameter tuning...
+2025-03-23 20:30:11,562 - INFO - Training the best model...
+2025-03-23 20:58:19,286 - INFO - Model saved to 'models/tuned_model_v1+v2+v3_seed42.keras'.
+2025-03-23 20:58:19,288 - INFO - Evaluating the best model on the test dataset...
+2025-03-23 20:58:34,799 - INFO - Classification Report:
+2025-03-23 20:58:34,800 - INFO - {'airplane': {'precision': 0.7062084257206208, 'recall': 0.8493333333333334, 'f1-score': 0.7711864406779662, 'support': 750.0}, 'automobile': {'precision': 0.8463726884779517, 'recall': 0.7933333333333333, 'f1-score': 0.8189951823812801, 'support': 750.0}, 'bird': {'precision': 0.6743869209809265, 'recall': 0.66, 'f1-score': 0.6671159029649596, 'support': 750.0}, 'cat': {'precision': 0.5736543909348442, 'recall': 0.54, 'f1-score': 0.5563186813186813, 'support': 750.0}, 'deer': {'precision': 0.7298937784522003, 'recall': 0.6413333333333333, 'f1-score': 0.6827537260468417, 'support': 750.0}, 'dog': {'precision': 0.6514522821576764, 'recall': 0.628, 'f1-score': 0.639511201629328, 'support': 750.0}, 'frog': {'precision': 0.6455331412103746, 'recall': 0.896, 'f1-score': 0.7504187604690117, 'support': 750.0}, 'horse': {'precision': 0.8578052550231839, 'recall': 0.74, 'f1-score': 0.7945597709377237, 'support': 750.0}, 'ship': {'precision': 0.87701317715959, 'recall': 0.7986666666666666, 'f1-score': 0.8360083740404746, 'support': 750.0}, 'truck': {'precision': 0.8390313390313391, 'recall': 0.7853333333333333, 'f1-score': 0.8112947658402204, 'support': 750.0}, 'accuracy': 0.7332, 'macro avg': {'precision': 0.7401351399148708, 'recall': 0.7332000000000001, 'f1-score': 0.7328162806306489, 'support': 7500.0}, 'weighted avg': {'precision': 0.7401351399148707, 'recall': 0.7332, 'f1-score': 0.7328162806306487, 'support': 7500.0}}
+2025-03-23 20:58:34,801 - INFO - Confusion Matrix:
+2025-03-23 20:58:34,801 - INFO - [[637  11  27  14  11   5   8   4  20  13]
+ [ 21 595   5   1   6   4  24   4  28  62]
+ [ 49   6 495  28  33  41  76  13   8   1]
+ [ 20   4  37 405  33 127  97  13   8   6]
+ [ 22   1  60  53 481  17  78  34   1   3]
+ [ 13   1  45 126  27 471  48  12   2   5]
+ [  5   0  27  20  14   8 672   3   0   1]
+ [ 17   5  28  37  44  42  17 555   0   5]
+ [ 79  17   8  12   4   4   9   1 599  17]
+ [ 39  63   2  10   6   4  12   8  17 589]]
+2025-03-23 20:58:35,380 - INFO - Evaluation report saved to 'reports/evaluation_report_v1+v2+v3_seed42.json'.
+2025-03-23 20:58:35,457 - INFO - All partitions processed. Model training complete.
