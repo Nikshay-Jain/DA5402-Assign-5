@@ -63,7 +63,7 @@ project_root/
 ├── dvc.yaml                # workflow to run
 ├── partition.dvc           # dvc tracker for partition
 ├── requirements.txt        # Libraries list
-└── README.md               # Project documentation
+└── Readme.md               # Project documentation
 ```
 
 ## Setup Instructions
@@ -151,7 +151,7 @@ The code file, when executed, generates:
 All of the mentioned folders are created automatically on first run.
 
 ### Task 4: Train and test on partitions using dvc
-As mentioned earlier, for `random_seed = 42`, the execution is already completeed by the run of `model_train_eval.py` in task 3 on all necessary partitions:
+As mentioned earlier, for `random_seed = 42`, the execution is already completed by the run of `model_train_eval.py` in task 3 on all necessary partitions:
 - v1
 - v2
 - v3
@@ -165,6 +165,8 @@ python scripts\model_train_eval.py
 ```
 
 All the output files get saved in the directories discussed for task 3.
+
+I have executed the tasks for `random_seed` = 21, 42, 84 as asked in the assignment and would encourage the reader to try out the same to verify.
 
 ### Note:
 The Tasks 3 and 4 can also be run by the following single command:
