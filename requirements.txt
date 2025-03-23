@@ -3,5 +3,6 @@ keras-tuner
 scikit-learn
 matplotlib
 seaborn
+shutils
 PyYAML
 dvc

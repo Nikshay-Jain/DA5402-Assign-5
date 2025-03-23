@@ -16,7 +16,8 @@ tf.random.set_seed(random_seed)
 
 # Define paths
 test_dir = "data/test"
-model_path = "models/tuned_model.keras"
+models_dir = "models"  # Directory containing all trained models
+reports_dir = "reports"  # Directory to save evaluation reports
 
 # Load the test dataset
 test_data = tf.keras.utils.image_dataset_from_directory(
@@ -35,69 +36,87 @@ class_names = test_data.class_names
 normalization_layer = tf.keras.layers.Rescaling(1.0 / 255)
 test_dataset = test_data.map(lambda x, y: (normalization_layer(x), tf.one_hot(y, depth=10)))
 
-# Load the trained model
-model = tf.keras.models.load_model(model_path)
+# Function to evaluate a single model
+def evaluate_model(model_path, test_dataset, class_names):
+    # Load the trained model
+    model = tf.keras.models.load_model(model_path)
 
-# Generate predictions
-y_true = np.concatenate([y for x, y in test_dataset], axis=0)
-y_pred = model.predict(test_dataset)
-y_pred_classes = np.argmax(y_pred, axis=1)
-y_true_classes = np.argmax(y_true, axis=1)
+    # Generate predictions
+    y_true = np.concatenate([y for x, y in test_dataset], axis=0)
+    y_pred = model.predict(test_dataset)
+    y_pred_classes = np.argmax(y_pred, axis=1)
+    y_true_classes = np.argmax(y_true, axis=1)
 
-# Compute overall accuracy
-accuracy = accuracy_score(y_true_classes, y_pred_classes)
-print(f"Overall Accuracy: {accuracy:.4f}")
+    # Compute overall accuracy
+    accuracy = accuracy_score(y_true_classes, y_pred_classes)
+    print(f"Overall Accuracy: {accuracy:.4f}")
 
-# Generate a classification report for detailed metrics per class
-print("\nClassification Report:")
-print(classification_report(y_true_classes, y_pred_classes, target_names=class_names))
+    # Generate a classification report for detailed metrics per class
+    print("\nClassification Report:")
+    class_report = classification_report(y_true_classes, y_pred_classes, target_names=class_names, output_dict=True)
+    print(classification_report(y_true_classes, y_pred_classes, target_names=class_names))
 
-# Compute the confusion matrix
-confusion_mtx = confusion_matrix(y_true_classes, y_pred_classes)
+    # Compute the confusion matrix
+    confusion_mtx = confusion_matrix(y_true_classes, y_pred_classes)
+    os.makedirs("figures", exist_ok=True)  # Create figures directory if it doesn't exist
 
-# Plot the confusion matrix
-plt.figure(figsize=(12, 9))
-sns.heatmap(confusion_mtx, annot=True, fmt='g', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
-plt.title('Confusion Matrix')
-plt.xlabel('Predicted Label')
-plt.ylabel('True Label')
-plt.show()
+    # Plot the confusion matrix
+    plt.figure(figsize=(12, 9))
+    sns.heatmap(confusion_mtx, annot=True, fmt='g', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
+    plt.title(f'Confusion Matrix - {os.path.splitext(model_name)[0]}')
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    plt.savefig(f"figures/confusion_matrix_{os.path.splitext(model_name)[0][12:]}.png")
 
-# Class-wise accuracy
-class_accuracy = {}
-for i, class_name in enumerate(class_names):
-    class_indices = np.where(y_true_classes == i)[0]
-    correct_predictions = np.sum(y_pred_classes[class_indices] == y_true_classes[class_indices])
-    total_samples = len(class_indices)
-    class_accuracy[class_name] = float(correct_predictions / total_samples)  # Convert to float
-    print(f"Accuracy for class {class_name}: {class_accuracy[class_name]:.4f}")
+    # Class-wise accuracy
+    class_accuracy = {}
+    for i, class_name in enumerate(class_names):
+        class_indices = np.where(y_true_classes == i)[0]
+        correct_predictions = np.sum(y_pred_classes[class_indices] == y_true_classes[class_indices])
+        total_samples = len(class_indices)
+        class_accuracy[class_name] = float(correct_predictions / total_samples)  # Convert to float
+        print(f"Accuracy for class {class_name}: {class_accuracy[class_name]:.4f}")
 
-# Misclassification table
-misclassification_table = {}
-for i, true_class in enumerate(class_names):
-    misclassification_table[true_class] = {}
-    for j, pred_class in enumerate(class_names):
-        if i != j:
-            misclassification_table[true_class][pred_class] = int(np.sum((y_true_classes == i) & (y_pred_classes == j)))  # Convert to int
+    # Misclassification table
+    misclassification_table = {}
+    for i, true_class in enumerate(class_names):
+        misclassification_table[true_class] = {}
+        for j, pred_class in enumerate(class_names):
+            if i != j:
+                misclassification_table[true_class][pred_class] = int(np.sum((y_true_classes == i) & (y_pred_classes == j)))  # Convert to int
 
-# Print misclassification table
-print("\nMisclassification Table:")
-for true_class in class_names:
-    print(f"\nTrue Class: {true_class}")
-    for pred_class in class_names:
-        if true_class != pred_class:
-            print(f"Misclassified as {pred_class}: {misclassification_table[true_class][pred_class]}")
+    # Print misclassification table
+    print("\nMisclassification Table:")
+    for true_class in class_names:
+        print(f"\nTrue Class: {true_class}")
+        for pred_class in class_names:
+            if true_class != pred_class:
+                print(f"Misclassified as {pred_class}: {misclassification_table[true_class][pred_class]}")
 
-# Save evaluation report
-evaluation_report = {
-    "overall_accuracy": float(accuracy),  # Convert to float
-    "class_accuracy": class_accuracy,
-    "misclassification_table": misclassification_table,
-}
+    # Return evaluation report
+    evaluation_report = {
+        "overall_accuracy": float(accuracy),  # Convert to float
+        "class_accuracy": class_accuracy,
+        "classification_report": class_report,  # Include classification report
+        "misclassification_table": misclassification_table,
+    }
+    return evaluation_report
 
-# Save the evaluation report to a file
-os.makedirs("reports", exist_ok=True)
-with open("reports/evaluation_report.json", "w") as f:
-    json.dump(evaluation_report, f, indent=4)
+# Iterate through all models in the models directory
+os.makedirs(reports_dir, exist_ok=True)  # Create reports directory if it doesn't exist
+for model_name in os.listdir(models_dir):
+    if model_name.endswith(".keras"):  # Only process .keras files
+        model_path = os.path.join(models_dir, model_name)
+        print(f"\nEvaluating model: {model_name}")
 
-print("Evaluation complete. Report saved to 'reports/evaluation_report.json'.")
+        # Evaluate the model
+        evaluation_report = evaluate_model(model_path, test_dataset, class_names)
+
+        # Save the evaluation report to a file
+        report_name = f"evaluation_report_{os.path.splitext(model_name)[0][12:]}.json"
+        report_path = os.path.join(reports_dir, report_name)
+        with open(report_path, "w") as f:
+            json.dump(evaluation_report, f, indent=4)
+        print(f"Evaluation report saved to '{report_path}'.")
+
+print("\nAll models evaluated. Reports saved to 'reports/' directory.")

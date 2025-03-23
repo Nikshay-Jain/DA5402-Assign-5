@@ -1,5 +1,6 @@
 # scripts/model_training.py
 import numpy as np
+from datetime import datetime
 import os, yaml, logging, subprocess
 
 import tensorflow as tf
@@ -21,7 +22,8 @@ logging.basicConfig(
         logging.StreamHandler()  # Print logs to the console
     ]
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(f"{__name__}_{datetime.now().strftime('%Y_%m_%d_%H-%M-%S')}")
+logger.info("Model training script started.")
 
 # Load parameters from params.yaml
 with open("params.yaml", "r") as f:
@@ -35,7 +37,7 @@ tf.random.set_seed(random_seed)
 train_dir = "data/train"
 val_dir = "data/val"
 test_dir = "data/test"
-model_path = "models/tuned_model_{params['data']['version']}_seed{random_seed}.keras"
+model_path = f"models/tuned_model_{params['data']['version']}_seed{random_seed}.keras"
 
 # # Pull dataset from DVC
 # logger.info("Pulling dataset from DVC...")
@@ -49,7 +51,6 @@ train_data = tf.keras.utils.image_dataset_from_directory(
     batch_size=params["model"]["batch_size"],
     label_mode="int",  # Labels are integers
     seed=random_seed,
-    subset="training",
 )
 
 val_data = tf.keras.utils.image_dataset_from_directory(
@@ -58,7 +59,6 @@ val_data = tf.keras.utils.image_dataset_from_directory(
     batch_size=params["model"]["batch_size"],
     label_mode="int",
     seed=random_seed,
-    subset="validation",
 )
 
 test_data = tf.keras.utils.image_dataset_from_directory(
@@ -67,8 +67,7 @@ test_data = tf.keras.utils.image_dataset_from_directory(
     batch_size=params["model"]["batch_size"],
     label_mode="int",
     seed=random_seed,
-    shuffle=False,       # Do not shuffle for evaluation
-    subset="testing",
+    shuffle=False,       # Do not shuffle for eval
 )
 
 # Capture class names from the training dataset
