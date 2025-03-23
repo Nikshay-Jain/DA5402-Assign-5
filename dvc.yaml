@@ -16,21 +16,15 @@ stages:
       - data/val
       - data/test
 
-  model_training:
-    cmd: python scripts/model_training.py
+  model_train_eval:
+    cmd: python scripts/model_train_eval.py
     deps:
       - data/train
       - data/val
       - data/test
+      - partition
       - params.yaml
     outs:
-      - models/tuned_model.keras
-
-  eval_perf:
-    cmd: python scripts/eval_perf.py
-    deps:
-      - models/tuned_model
-      - data/test
-      - params.yaml
-    outs:
-      - reports/evaluation_report.json
+      - models
+      - reports
+      - figures
