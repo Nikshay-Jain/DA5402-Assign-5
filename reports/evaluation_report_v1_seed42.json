@@ -1,0 +1,92 @@
+{
+    "partition": "v1",
+    "random_seed": 42,
+    "overall_accuracy": 0.5744,
+    "class_accuracy": {
+        "airplane": 0.512,
+        "automobile": 0.572,
+        "bird": 0.488,
+        "cat": 0.408,
+        "deer": 0.468,
+        "dog": 0.812,
+        "frog": 0.608,
+        "horse": 0.516,
+        "ship": 0.624,
+        "truck": 0.736
+    },
+    "classification_report": {
+        "airplane": {
+            "precision": 0.6881720430107527,
+            "recall": 0.512,
+            "f1-score": 0.5871559633027523,
+            "support": 250.0
+        },
+        "automobile": {
+            "precision": 0.8773006134969326,
+            "recall": 0.572,
+            "f1-score": 0.6924939467312349,
+            "support": 250.0
+        },
+        "bird": {
+            "precision": 0.41924398625429554,
+            "recall": 0.488,
+            "f1-score": 0.4510166358595194,
+            "support": 250.0
+        },
+        "cat": {
+            "precision": 0.375,
+            "recall": 0.408,
+            "f1-score": 0.39080459770114945,
+            "support": 250.0
+        },
+        "deer": {
+            "precision": 0.6062176165803109,
+            "recall": 0.468,
+            "f1-score": 0.5282167042889391,
+            "support": 250.0
+        },
+        "dog": {
+            "precision": 0.3704379562043796,
+            "recall": 0.812,
+            "f1-score": 0.5087719298245614,
+            "support": 250.0
+        },
+        "frog": {
+            "precision": 0.8306010928961749,
+            "recall": 0.608,
+            "f1-score": 0.7020785219399538,
+            "support": 250.0
+        },
+        "horse": {
+            "precision": 0.7865853658536586,
+            "recall": 0.516,
+            "f1-score": 0.6231884057971014,
+            "support": 250.0
+        },
+        "ship": {
+            "precision": 0.7428571428571429,
+            "recall": 0.624,
+            "f1-score": 0.6782608695652174,
+            "support": 250.0
+        },
+        "truck": {
+            "precision": 0.6344827586206897,
+            "recall": 0.736,
+            "f1-score": 0.6814814814814815,
+            "support": 250.0
+        },
+        "accuracy": 0.5744,
+        "macro avg": {
+            "precision": 0.6330898575774337,
+            "recall": 0.5744,
+            "f1-score": 0.584346905649191,
+            "support": 2500.0
+        },
+        "weighted avg": {
+            "precision": 0.6330898575774336,
+            "recall": 0.5744,
+            "f1-score": 0.584346905649191,
+            "support": 2500.0
+        }
+    }
+}

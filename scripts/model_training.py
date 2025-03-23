@@ -1,4 +1,5 @@
-# scripts/model_training.py
+# Task 3
+
 import numpy as np
 from datetime import datetime
 import os, yaml, logging, subprocess
@@ -18,8 +19,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(os.path.join(log_dir, "model_training.log")),  # Save logs to a file
-        logging.StreamHandler()  # Print logs to the console
+        logging.FileHandler(os.path.join(log_dir, f"model_training_{datetime.now().strftime('%Y_%m_%d_%H-%M-%S')}.log")),  # Save logs to a file
+        logging.StreamHandler()             # Print logs to the console
     ]
 )
 logger = logging.getLogger(f"{__name__}_{datetime.now().strftime('%Y_%m_%d_%H-%M-%S')}")

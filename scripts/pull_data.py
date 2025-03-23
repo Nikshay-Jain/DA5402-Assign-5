@@ -1,4 +1,5 @@
-# scripts/pull_data.py
+# Task 3
+
 import yaml
 import shutil
 import os

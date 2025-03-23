@@ -1,4 +1,5 @@
-# scripts/data_prep.py
+# Task 2
+
 import os, yaml, random, shutil
 
 # Load parameters from params.yaml

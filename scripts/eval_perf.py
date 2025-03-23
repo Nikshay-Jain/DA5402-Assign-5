@@ -1,4 +1,5 @@
-# scripts/evaluate_performance.py
+# Task 3
+
 import tensorflow as tf
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
@@ -16,8 +17,8 @@ tf.random.set_seed(random_seed)
 
 # Define paths
 test_dir = "data/test"
-models_dir = "models"  # Directory containing all trained models
-reports_dir = "reports"  # Directory to save evaluation reports
+models_dir = "models"     # Directory containing all trained models
+reports_dir = "reports"   # Directory to save evaluation reports
 
 # Load the test dataset
 test_data = tf.keras.utils.image_dataset_from_directory(
