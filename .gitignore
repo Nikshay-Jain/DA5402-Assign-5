@@ -1,3 +1,5 @@
 /venv
 /data
 /partition
+/models
+/hyperparameter_tuning
