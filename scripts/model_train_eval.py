@@ -153,7 +153,7 @@ def train_and_evaluate(partition, random_seed):
     tuner = kt.RandomSearch(
         build_model,
         objective='val_accuracy',
-        max_trials=2,                   # Number of hyperparameter combinations to try
+        max_trials=3,                   # Number of hyperparameter combinations to try
         executions_per_trial=1,         # Number of models to train per trial
         directory='hyperparameter_tuning',
         project_name=f'cifar10_tuning_{partition}_seed{random_seed}'
@@ -217,7 +217,7 @@ def train_and_evaluate(partition, random_seed):
     plt.title(f'Confusion Matrix - {partition}_seed{random_seed}')
     plt.xlabel('Predicted Label')
     plt.ylabel('True Label')
-    plt.savefig(f"figures/confusion_matrix_{partition}_seed{random_seed}'.png")
+    plt.savefig(f"figures/confusion_matrix_{partition}_seed{random_seed}.png")
 
     # Class-wise accuracy
     class_accuracy = {}
