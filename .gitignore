@@ -1,7 +1,3 @@
 /venv
 /data
 /partition
-/models
-/hyperparameter_tuning
-*.h5
-*.keras
