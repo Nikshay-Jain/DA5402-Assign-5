@@ -1,0 +1,6 @@
+2025-03-23 17:04:35,355 - INFO - Model training script started.
+2025-03-23 17:04:35,359 - INFO - Processing partition: data
+2025-03-23 17:04:35,360 - INFO - Loading datasets...
+2025-03-23 17:04:40,503 - INFO - Starting hyperparameter tuning...
+2025-03-23 17:04:41,882 - WARNING - From C:\Users\niksh\Desktop\DA5402-Assign-5\venv\Lib\site-packages\keras\src\backend\common\global_state.py:82: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
